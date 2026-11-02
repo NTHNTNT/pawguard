@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PawGuard</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#14212b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawGuard">
+<style>
+:root{--bg:#e9f0f3;--ink:#14212b;--mut:#5d6f7b;--card:#fff;--g:#1f9d6b;--y:#f0a202;--r:#d9382b;--line:#cfdce3}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1a21;--ink:#eaf2f6;--mut:#93a6b2;--card:#182630;--line:#27394590}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Avenir Next","Trebuchet MS",system-ui,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));max-width:480px;margin:0 auto}
+h1{font-size:1.15rem;margin:4px 0 0;letter-spacing:.01em}h2{font-size:1.9rem;line-height:1.1;margin:.2em 0 .3em}
+.m{color:var(--mut);margin:.2em 0 1em;font-size:.92rem}
+.card{background:var(--card);border-radius:18px;padding:16px;margin:0 0 12px;border:1px solid var(--line)}
+label{display:block;font-size:.85rem;color:var(--mut);margin:12px 0 4px}
+select,input{width:100%;font:inherit;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:8px}.row button{width:52px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:1.2rem}
+.btn{display:block;width:100%;text-align:center;text-decoration:none;font:inherit;font-weight:700;padding:14px;border-radius:12px;border:0;background:var(--ink);color:var(--bg);margin-top:14px;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line);font-weight:500;margin-top:8px}
+.hero{border:0;border-radius:26px;padding:22px 20px;color:#fff}.hero.g{background:var(--g)}.hero.y{background:var(--y);color:#2b1d00}.hero.r{background:var(--r)}
+.hero p{margin:.15em 0;opacity:.92}.hero small{font-size:.9rem}
+.strip{display:flex;gap:4px;overflow-x:auto;padding:10px 0 4px}
+.chip{flex:0 0 46px;text-align:center;border-radius:8px;padding:8px 0;color:#fff;font-size:.9rem;line-height:1.2}.chip b{display:block;font-size:.75rem;opacity:.9}
+.chip.g{background:var(--g)}.chip.y{background:var(--y);color:#2b1d00}.chip.r{background:var(--r)}
+.best{font-weight:700;margin:6px 0 0}.warn{margin:0 0 12px;padding:12px 14px;border-radius:12px;background:var(--card);border-left:5px solid var(--y)}
+.link{display:block;color:var(--ink);text-decoration:none;font-weight:700;border-radius:14px}
+.pro{border:2px solid var(--ink)}.pro p{margin:.3em 0}
+</style></head><body>
+<h1>PawGuard</h1><p class="m" data-i="sub"></p>
+<section id="setup" class="card">
+<label data-i="breed"></label><select id="breed"></select>
+<label data-i="age"></label><select id="age"><option value="0" data-i="adult"></option><option value="1" data-i="puppy"></option><option value="2" data-i="senior"></option></select>
+<label data-i="city"></label><div class="row"><input id="city" autocomplete="off"><button id="loc" type="button" aria-label="Use my location">📍</button></div>
+<button id="save" class="btn" data-i="save"></button><p id="err" class="m"></p>
+</section>
+<section id="res" hidden>
+<div id="hero" class="card hero"></div>
+<div class="card"><b data-i="hours"></b><div id="strip" class="strip"></div><p id="best" class="best"></p></div>
+<div id="warn"></div>
+<a id="aff" class="card link" target="_blank" rel="noopener sponsored" hidden></a>
+<div class="card pro"><b data-i="pro"></b><p data-i="proTxt"></p><a id="pro" class="btn" target="_blank" rel="noopener" data-i="proBtn"></a></div>
+<button id="bell" class="btn ghost" data-i="alerts"></button>
+<button id="edit" class="btn ghost" data-i="edit"></button>
+<p class="m" data-i="disc"></p>
+</section>
+<script>
+const CFG={PRO:'https://buy.stripe.com/REPLACE_ME',AFF:'https://www.amazon.com/s?k=dog+cooling+mat&tag=REPLACE_ME'};
+// breed: [heat offset °C, cold limit °C]. Starter values: have a vet review them.
+const B={'Alaskan Malamute':[4,-25],'Siberian Husky':[4,-25],'Samoyed':[4,-25],'Akita':[3,-15],'Chow Chow':[4,-15],'Great Pyrenees':[4,-25],'Golden Retriever':[2,-5],'Labrador':[1,-3],'German Shepherd':[2,-8],'Border Collie':[1,-8],'Bulldog':[5,2],'French Bulldog':[5,3],'Pug':[5,3],'Boston Terrier':[5,3],'Shih Tzu':[3,5],'Chihuahua':[0,10],'Mixed / other':[2,0]};
+const L=(navigator.language||'en').startsWith('es')?'es':'en';
+const T={en:{sub:'Is it safe to walk your dog right now?',breed:'Breed',age:'Age',adult:'Adult',puppy:'Puppy',senior:'Senior (8+ years)',city:'City',save:'Check my dog',s0:'Good time for a walk',s1:'Short, easy walk only',s2:'Do not walk now',feels:'Feels like',pave:'Pavement (est.)',hours:'Today by hour',best:'Best window',noSafe:'coolest available',rain:'Rain likely later today.',paveW:'Pavement may burn paws. Press the back of your hand on it for 7 seconds.',aff:'Cooling gear for hot days',pro:'PawGuard Pro',proTxt:'Several dogs, hourly alerts and vet-ready reports.',proBtn:'Get Pro',alerts:'Enable alerts',on:'Alerts on',edit:'Edit dog or city',disc:'General guidance, not veterinary advice. Heavy panting, drooling or weakness: call a vet now.',here:'My location',locErr:'Location is blocked. Type your city instead.',nf:'City not found. Check the spelling.',late:'No more walk hours today.',net:'Could not load the weather. Check your connection.',noN:'Alerts are not supported in this browser. On iPhone, add PawGuard to your Home Screen first.'},
+es:{sub:'¿Es seguro sacar a pasear a tu perro ahora?',breed:'Raza',age:'Edad',adult:'Adulto',puppy:'Cachorro',senior:'Senior (8+ años)',city:'Ciudad',save:'Revisar a mi perro',s0:'Buen momento para pasear',s1:'Solo un paseo corto y tranquilo',s2:'No pasear ahora',feels:'Sensación térmica',pave:'Pavimento (est.)',hours:'Hoy por hora',best:'Mejor horario',noSafe:'lo más fresco disponible',rain:'Es probable que llueva más tarde.',paveW:'El pavimento puede quemar las patas. Apoya el dorso de tu mano 7 segundos.',aff:'Equipo para refrescar en días de calor',pro:'PawGuard Pro',proTxt:'Varios perros, alertas por hora y reportes para el veterinario.',proBtn:'Obtener Pro',alerts:'Activar alertas',on:'Alertas activadas',edit:'Cambiar perro o ciudad',disc:'Guía general, no es consejo veterinario. Jadeo fuerte, baba o debilidad: llama a un veterinario ya.',here:'Mi ubicación',locErr:'Ubicación bloqueada. Escribe tu ciudad.',nf:'Ciudad no encontrada. Revisa la ortografía.',late:'Ya no quedan horas de paseo hoy.',net:'No se pudo cargar el clima. Revisa tu conexión.',noN:'Las alertas no funcionan en este navegador. En iPhone, agrega PawGuard a tu pantalla de inicio primero.'}}[L];
+const $=q=>document.querySelector(q),esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+document.documentElement.lang=L;
+document.querySelectorAll('[data-i]').forEach(e=>e.textContent=T[e.dataset.i]);
+$('#breed').innerHTML=Object.keys(B).map(b=>`<option>${b}</option>`).join('');
+let P=null,place=null;try{P=JSON.parse(localStorage.pg)}catch(e){}
+const geo=async q=>{const r=await(await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name='+encodeURIComponent(q))).json(),g=r.results&&r.results[0];if(!g)throw 0;return{n:g.name,lat:g.latitude,lon:g.longitude}};
+const st=(h,P)=>{const[ho,co]=B[P.b],e=h.a+ho+P.a;let s=e>29||h.a<co-8?2:(e>24||h.a<co?1:0);const pv=h.u>=6&&h.t>=25?h.t+20:null;if(pv>=52)s=Math.max(s,1);if(pv>=57)s=2;return{s,pv}};
+$('#loc').onclick=()=>navigator.geolocation.getCurrentPosition(p=>{place={n:T.here,lat:p.coords.latitude,lon:p.coords.longitude};$('#city').value=T.here},()=>$('#err').textContent=T.locErr);
+$('#city').oninput=()=>place=null;
+$('#save').onclick=async()=>{try{$('#err').textContent='…';const pl=place||await geo($('#city').value);P={b:$('#breed').value,a:+$('#age').value,pl};try{localStorage.pg=JSON.stringify(P)}catch(e){}$('#err').textContent='';run()}catch(e){$('#err').textContent=T.nf}};
+$('#edit').onclick=()=>{$('#res').hidden=true;$('#setup').hidden=false};
+$('#bell').onclick=async()=>{if(!('Notification'in window))return alert(T.noN);const p=await Notification.requestPermission();$('#bell').textContent=p==='granted'?T.on:T.alerts};
+async function run(){
+$('#setup').hidden=true;$('#res').hidden=false;$('#hero').className='card hero g';$('#hero').textContent='…';
+try{
+const r=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${P.pl.lat}&longitude=${P.pl.lon}&hourly=temperature_2m,apparent_temperature,uv_index,precipitation_probability&timezone=auto&forecast_days=1`)).json();
+const H=r.hourly,now=new Date(Date.now()+r.utc_offset_seconds*1000).getUTCHours(),C=['g','y','r'];
+const hs=H.time.map((_,i)=>{const h={i,t:H.temperature_2m[i],a:H.apparent_temperature[i],u:H.uv_index[i],p:H.precipitation_probability[i]};return{...h,...st(h,P)}});
+const c=hs[now],w=hs.filter(h=>h.i>=Math.max(now,5)&&h.i<=21);
+$('#hero').className='card hero '+C[c.s];
+$('#hero').innerHTML=`<h2>${T['s'+c.s]}</h2><p>${esc(P.b)}, ${esc(P.pl.n)}</p><p>${T.feels}: ${Math.round(c.a)}°C</p>${c.pv?`<p>${T.pave}: ${Math.round(c.pv)}°C</p>`:''}`;
+$('#strip').innerHTML=w.map(h=>`<div class="chip ${C[h.s]}"><b>${h.i}h</b>${Math.round(h.a)}°</div>`).join('')||T.late;
+$('#best').textContent='';
+if(w.length){const m=Math.min(...w.map(h=>h.s));let b=[],q=[];w.forEach(h=>{if(h.s===m){q.push(h);if(q.length>b.length)b=[...q]}else q=[]});$('#best').textContent=`${T.best}: ${b[0].i}:00 to ${b[b.length-1].i+1}:00`+(m?` (${T.noSafe})`:'')}
+$('#warn').innerHTML=(w.some(h=>h.p>=60)?`<p class="warn">${T.rain}</p>`:'')+(c.pv>=52?`<p class="warn">${T.paveW}</p>`:'');
+const a=$('#aff');a.hidden=c.s===0;a.href=CFG.AFF;a.textContent=T.aff;$('#pro').href=CFG.PRO;
+if('Notification'in window&&Notification.permission==='granted'){$('#bell').textContent=T.on;if(c.s===2)navigator.serviceWorker.ready.then(g=>g.showNotification('PawGuard',{body:T.s2+': '+P.b,icon:'icon-192.png',tag:'pg'}))}
+}catch(e){$('#hero').className='card hero r';$('#hero').textContent=T.net}}
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(P&&B[P.b]){$('#breed').value=P.b;$('#age').value=P.a;$('#city').value=P.pl.n;place=P.pl;run()}
+</script></body></html>
