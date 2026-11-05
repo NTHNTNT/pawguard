@@ -41,7 +41,7 @@ body{background:#fff;overflow-x:hidden}html{background:#fff;overflow-x:hidden}
 .card{border-radius:22px;box-shadow:0 6px 0 rgba(20,33,43,.07)}
 .btn{background:linear-gradient(135deg,#ff8a3d,#ff5e7e);color:#fff;border-radius:14px}.btn.ghost{background:none;color:var(--ink)}
 .hero{border-radius:28px;box-shadow:0 8px 0 rgba(0,0,0,.12)}.hero h2{font-size:2.1rem;font-weight:800}
-.pro{border:2px solid #ff8a3d;background:linear-gradient(160deg,rgba(255,255,255,.6),rgba(255,138,61,.14))}
+.pro{border:2px solid #ff8a3d;background:linear-gradient(160deg,rgba(255,255,255,.38),rgba(255,138,61,.14))}
 .strip{padding:14px 0 8px;gap:6px}.chip{flex:0 0 54px;border-radius:16px;padding:10px 0;position:relative;box-shadow:0 3px 0 rgba(0,0,0,.14)}
 .chip span{display:block;font-size:1.2rem;font-weight:800}.chip i{display:block;font-style:normal;font-size:.8rem;font-weight:700}
 .chip.pick{outline:3px solid var(--ink);outline-offset:2px;transform:translateY(-4px)}
@@ -50,7 +50,7 @@ body{background:#fff;overflow-x:hidden}html{background:#fff;overflow-x:hidden}
 .scale{height:8px;border-radius:99px;margin-top:6px;background:linear-gradient(90deg,hsl(210 85% 52%),hsl(126 85% 52%),hsl(56 85% 52%),hsl(28 85% 52%),hsl(0 85% 52%))}
 body::before{content:'';position:fixed;inset:-10%;z-index:-2;pointer-events:none;background:radial-gradient(circle at 10% 8%,rgba(255,196,0,.5),transparent 38%),radial-gradient(circle at 92% 18%,rgba(0,170,255,.38),transparent 36%),radial-gradient(circle at 85% 88%,rgba(255,64,129,.32),transparent 38%),radial-gradient(circle at 8% 72%,rgba(0,214,143,.32),transparent 36%);animation:flash 9s ease-in-out infinite alternate}
 @keyframes flash{0%{transform:scale(1);opacity:.85}50%{transform:scale(1.12) rotate(2deg);opacity:1}100%{transform:scale(1.04) rotate(-2deg);opacity:.8;filter:hue-rotate(45deg)}}
-.card:not(.pro):not(.hero){background:rgba(255,255,255,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.card:not(.pro):not(.hero){background:rgba(255,255,255,.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .hdr{position:relative}
 .sun{position:absolute;z-index:-1;top:58px;right:6px;width:84px;height:84px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 40% 35%,#fffbe0 0,#ffe066 35%,#ffb703 65%,#ff8f00 100%);box-shadow:0 0 40px 18px rgba(255,190,40,.55),0 0 90px 40px rgba(255,160,0,.25);animation:sunIn 3s cubic-bezier(.2,.7,.2,1) both,glow 3s ease-in-out 3s infinite alternate}
 .sun::before{content:'';position:absolute;inset:-45%;border-radius:50%;background:repeating-conic-gradient(rgba(255,200,40,.6) 0 5deg,transparent 5deg 15deg);-webkit-mask:radial-gradient(circle,transparent 30%,#000 33%,transparent 70%);mask:radial-gradient(circle,transparent 30%,#000 33%,transparent 70%);animation:spin 40s linear infinite}
@@ -67,12 +67,12 @@ body.photos #dog{display:none}
 #pack{height:165px}#pack img{height:155px}
 #zoo{position:fixed;inset:0;z-index:-1;pointer-events:none}
 #zoo img{position:absolute;width:auto;transform-origin:50% 100%;animation:pop .6s calc(var(--i)*.15s) both}
-#zoo .dob{left:-14px;bottom:0;height:200px}#zoo .gol{right:-14px;bottom:0;height:200px}#zoo .lab{right:-34px;top:44vh;height:180px}
+#zoo .dob{left:-18px;bottom:0;height:260px}
 #zoo img.run{animation:run 1.9s ease-in forwards}
 @media(prefers-reduced-motion:reduce){#zoo img{animation:none}}
 </style></head><body>
 <img id="wm" src="dog-husky.png" alt="" onerror="this.remove()">
-<div id="zoo" aria-hidden="true"><img class="dob" src="dog-doberman.png" alt="" style="--i:1" onerror="this.remove()"><img class="gol" src="dog-golden.png" alt="" data-run="1" style="--i:2" onerror="this.remove()"><img class="lab" src="dog-labrador.png" alt="" data-run="1" style="--i:3" onerror="this.remove()"></div>
+<div id="zoo" aria-hidden="true"><img class="dob" src="dog-doberman.png" alt="" style="--i:1" onerror="this.remove()"></div>
 <header class="hdr"><div class="sun"></div><div class="top"><h1>PawGuard</h1><button id="lang" class="lang" type="button" aria-label="Language"></button></div><p class="m" data-i="sub"></p>
 <div id="pack" aria-hidden="true"><img src="dog-husky.png" alt="" style="--i:0" onerror="this.remove()"></div>
 <svg id="dog" class="g" viewBox="0 0 200 175" role="img" aria-label="Happy dog ready for a walk">
