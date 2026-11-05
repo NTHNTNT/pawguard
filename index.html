@@ -31,8 +31,8 @@ select,input{width:100%;font:inherit;padding:12px;border-radius:10px;border:1px 
 .pro{border:2px solid var(--ink)}.pro p{margin:.3em 0}
 .top{display:flex;justify-content:space-between;align-items:center}.lang{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px}.pro ul{margin:.4em 0 0;padding-left:1.1em}.pro li{margin:.25em 0}
 #acct input{margin-top:8px}
-body{background:linear-gradient(180deg,#ffd978 0,#9fdcff 320px,#e9f6ff 640px) no-repeat,#e9f6ff}
-@media(prefers-color-scheme:dark){body{background:linear-gradient(180deg,#3b2a6b 0,#1d3b5a 320px,#0f1a21 640px) no-repeat,#0f1a21}}
+body{background:#fff;overflow-x:hidden}html{background:#fff;overflow-x:hidden}
+@media(prefers-color-scheme:dark){:root{--bg:#fff;--ink:#14212b;--mut:#5d6f7b;--card:#fff;--line:#cfdce3}}
 .hdr{text-align:center;margin-bottom:6px}.hdr .top{text-align:left}.hdr h1{font-size:1.5rem;font-weight:800}.hdr .m{color:var(--ink);opacity:.8;text-align:left;margin-bottom:0}
 .hdr svg{display:block;width:190px;max-width:62%;margin:2px auto 0;overflow:visible}
 #dog .sweat,#dog .spark{display:none}#dog.g .spark{display:block}#dog.r .sweat{display:block}#dog.r .tongue{display:none}
@@ -48,8 +48,26 @@ body{background:linear-gradient(180deg,#ffd978 0,#9fdcff 320px,#e9f6ff 640px) no
 .bestbar{display:block;margin:10px 0 0;padding:12px 14px;border-radius:16px;text-align:center;font-weight:800;font-size:1.05rem;background:var(--line)}.bestbar:empty{display:none}
 .bestbar.g{background:var(--g);color:#fff}.bestbar.y{background:var(--y);color:#2b1d00}.bestbar.r{background:var(--r);color:#fff}
 .scale{height:8px;border-radius:99px;margin-top:6px;background:linear-gradient(90deg,hsl(210 85% 52%),hsl(126 85% 52%),hsl(56 85% 52%),hsl(28 85% 52%),hsl(0 85% 52%))}
+body::before{content:'';position:fixed;inset:-10%;z-index:-2;pointer-events:none;background:radial-gradient(circle at 10% 8%,rgba(255,196,0,.5),transparent 38%),radial-gradient(circle at 92% 18%,rgba(0,170,255,.38),transparent 36%),radial-gradient(circle at 85% 88%,rgba(255,64,129,.32),transparent 38%),radial-gradient(circle at 8% 72%,rgba(0,214,143,.32),transparent 36%);animation:flash 9s ease-in-out infinite alternate}
+@keyframes flash{0%{transform:scale(1);opacity:.85}50%{transform:scale(1.12) rotate(2deg);opacity:1}100%{transform:scale(1.04) rotate(-2deg);opacity:.8;filter:hue-rotate(45deg)}}
+.card:not(.pro):not(.hero){background:rgba(255,255,255,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.hdr{position:relative}
+.sun{position:absolute;z-index:-1;top:58px;right:6px;width:84px;height:84px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 40% 35%,#fffbe0 0,#ffe066 35%,#ffb703 65%,#ff8f00 100%);box-shadow:0 0 40px 18px rgba(255,190,40,.55),0 0 90px 40px rgba(255,160,0,.25);animation:sunIn 3s cubic-bezier(.2,.7,.2,1) both,glow 3s ease-in-out 3s infinite alternate}
+.sun::before{content:'';position:absolute;inset:-45%;border-radius:50%;background:repeating-conic-gradient(rgba(255,200,40,.6) 0 5deg,transparent 5deg 15deg);-webkit-mask:radial-gradient(circle,transparent 30%,#000 33%,transparent 70%);mask:radial-gradient(circle,transparent 30%,#000 33%,transparent 70%);animation:spin 40s linear infinite}
+@keyframes sunIn{from{transform:translate(-70vw,90px) scale(.3);opacity:0}to{transform:none;opacity:1}}
+@keyframes glow{to{box-shadow:0 0 56px 26px rgba(255,190,40,.7),0 0 110px 60px rgba(255,160,0,.3)}}@keyframes spin{to{transform:rotate(360deg)}}
+#pack{display:flex;justify-content:center;align-items:flex-end;height:120px;margin-top:6px;cursor:pointer}#pack:empty{display:none}
+#pack img{height:110px;width:auto;margin:0 -4px;transform-origin:50% 100%;animation:pop .6s calc(var(--i)*.15s) both}
+@keyframes pop{from{transform:translateY(30px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+#pack img.run{animation:run 1.9s ease-in forwards}
+@keyframes run{0%{transform:translate(0,0)}10%{transform:translate(0,-10px)}20%{transform:translate(10vw,0)}30%{transform:translate(22vw,-10px)}40%{transform:translate(36vw,0)}50%{transform:translate(50vw,-10px)}60%{transform:translate(64vw,0)}70%{transform:translate(80vw,-10px)}80%{transform:translate(95vw,0)}100%{transform:translate(130vw,0);visibility:hidden}}
+body.photos #dog{display:none}
+#wm{position:fixed;z-index:-1;left:0;bottom:0;width:100vw;max-width:760px;height:72vh;object-fit:cover;object-position:50% 12%;filter:grayscale(1) contrast(1.1);opacity:0;pointer-events:none;transition:opacity 2.5s}#wm.on{opacity:.09}
+@media(prefers-reduced-motion:reduce){body::before,.sun,.sun::before,#pack img{animation:none}}
 </style></head><body>
-<header class="hdr"><div class="top"><h1>PawGuard</h1><button id="lang" class="lang" type="button" aria-label="Language"></button></div><p class="m" data-i="sub"></p>
+<img id="wm" src="dog-husky.png" alt="" onerror="this.remove()">
+<header class="hdr"><div class="sun"></div><div class="top"><h1>PawGuard</h1><button id="lang" class="lang" type="button" aria-label="Language"></button></div><p class="m" data-i="sub"></p>
+<div id="pack" aria-hidden="true"><img src="dog-husky.png" alt="" style="--i:0" onerror="this.remove()"><img src="dog-labrador.png" alt="" data-run="1" style="--i:1" onerror="this.remove()"><img src="dog-golden.png" alt="" data-run="1" style="--i:2" onerror="this.remove()"><img src="dog-doberman.png" alt="" style="--i:3" onerror="this.remove()"></div>
 <svg id="dog" class="g" viewBox="0 0 200 175" role="img" aria-label="Happy dog ready for a walk">
 <ellipse cx="100" cy="167" rx="60" ry="7" fill="#000" opacity=".12"/>
 <ellipse cx="50" cy="78" rx="19" ry="38" fill="#b8692c" transform="rotate(16 50 78)"/><ellipse cx="150" cy="78" rx="19" ry="38" fill="#b8692c" transform="rotate(-16 150 78)"/>
@@ -138,6 +156,9 @@ $('#pro').onclick=()=>ev('founder_click');$('#aff').onclick=()=>ev('affiliate_cl
 addEventListener('appinstalled',()=>ev('app_installed'));
 if(CFG.UMAMI){const u=document.createElement('script');u.defer=true;u.src='https://cloud.umami.is/script.js';u.dataset.websiteId=CFG.UMAMI;document.head.appendChild(u)}
 apply();
+const play=()=>{const k=[...document.querySelectorAll('#pack img')],w=$('#wm');k.forEach(i=>{i.classList.remove('run');i.style.animation='none';void i.offsetWidth;i.style.animation=''});if(w)w.classList.remove('on');setTimeout(()=>{k.forEach(i=>i.dataset.run&&i.classList.add('run'));if(w)w.classList.add('on')},2600)};
+addEventListener('load',()=>{if(document.querySelector('#pack img')){document.body.classList.add('photos');play()}});
+$('#pack').onclick=play;
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 if(P&&B[P.b]){$('#breed').value=P.b;$('#age').value=P.a;$('#city').value=P.pl.n;place=P.pl;run()}
 </script></body></html>
